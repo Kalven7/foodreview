@@ -1,16 +1,26 @@
-var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'foodreview',
-  password : 'foodreview',
-  database : 'foodreview'
-});
- 
-connection.connect();
- 
-connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-  if (error) throw error;
-  console.log('The solution is: ', results[0].solution);
-});
- 
-connection.end();
+import Sequelize from "sequelize";
+import dotenv from 'dotenv';
+import testConn from './config/db.js';
+//load config
+dotenv.config({path: './config/config.env'});
+
+export const connection = new Sequelize(
+process.env.MYSQL_DATABASE,
+process.env.MYSQL_USER,
+process.env.MYSQL_PASSWORD,
+{
+  dialect:'mysql',
+host: process.env.MYSQL_HOST
+}
+);
+
+export default async function testConn(){
+
+ try {
+  await connection.authenticate();
+  console.log("Connection has been estabelished successfully.");
+ } catch(error) {
+  console.error("Unable to connect to the database : ", error);
+ }
+
+} ;
