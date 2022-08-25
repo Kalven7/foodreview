@@ -13,12 +13,20 @@ const Review = connection.define(
        },
        idUser:{
            type: Sequelize.INTEGER,
-           allowNull:false
+           allowNull:false,
+           references:{
+            model:'users',
+            key:'id'
+           }
        },
    
        idRestaurant:{
            type: Sequelize.INTEGER,
-           allowNull:false
+           allowNull:false,
+           references:{
+            model:'restaurants',
+            key:'id'
+           }
        },
        Comment:{
            type: Sequelize.STRING,
