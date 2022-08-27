@@ -1,38 +1,53 @@
-import Sequelize  from "sequelize";
-
-import connection from "../config/db.js";
+import Sequelize from 'sequelize';
+import connection from '../config/db.js';
+import bcrypt from 'bcrypt';
 
 const User = connection.define(
-     'user',
-     {
-        id:{
+    'user',
+    {
+        id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             allowNull: false,
-            primaryKey: true
+            primaryKey: true    
         },
-        name:{
+        name: {
             type: Sequelize.STRING,
-            allowNull:false
+            allowNull: false
         },
-    
-        email:{
+        email: {
             type: Sequelize.STRING,
             allowNull: false,
-            validate:{
+            validate: {
                 isEmail: true
             },
             unique: true
         },
-        password:{
+        password: {
             type: Sequelize.STRING,
-            allowNull:false
+            allowNull: false
         },
-        admin:{
+        admin: {
             type: Sequelize.BOOLEAN,
-            allowNull:false
+            allowNull: false
+        }
+    },
+    {
+        hooks: {
+            beforeCreate: async(user) => {
+                if(user.password){
+                    const salt = await bcrypt.genSaltSync(10, 'a');
+                    user.password = bcrypt.hashSync(user.password, salt);
+                }
+            },
+            beforeUpdate: async(user) => {
+                if(user.password){
+                    const salt = await bcrypt.genSaltSync(10, 'a');
+                    user.password = bcrypt.hashSync(user.password, salt);
+                }
+            }
         }
     }
-
 );
+
 export default User;
